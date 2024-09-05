@@ -19,11 +19,12 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { AddDialogPlayerComponent } from '../add-dialog-player/add-dialog-player.component';
 import {MatDialogModule} from '@angular/material/dialog';
+import { GameInfoCardComponent } from '../game-info-card/game-info-card.component';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [CommonModule, PlayerComponent,MatButtonModule,MatIconModule,MatDialogModule],
+  imports: [CommonModule, PlayerComponent,MatButtonModule,MatIconModule,MatDialogModule, GameInfoCardComponent],
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
 })
@@ -46,6 +47,9 @@ export class GameComponent {
     setTimeout(()=>{
       this.pickCardAnimation = false;
       this.game?.playedCard.push(this.currentCard);
+      this.game.currentPlayer++;
+      this.game.currentPlayer=this.game.currentPlayer%this.game.players.length;
+     
     },1500);
   }
 
@@ -60,7 +64,7 @@ export class GameComponent {
 
     dialogRef.afterClosed().subscribe(name => {
       console.log('The dialog was closed');
-      if (name !== undefined) {
+      if (name !== undefined && name.length>0) {
         this.game?.players.push(name);
       }
     });

@@ -26,7 +26,11 @@ export class AddDialogPlayerComponent {
   
  name:string ="";
 
- onNoClick(){
+ constructor(){
 
  }
+
+ onNoClick(): void {
+  
+}
 }
