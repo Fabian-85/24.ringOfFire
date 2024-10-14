@@ -4,7 +4,7 @@ import { PlayerComponent } from '../player/player.component';
 import { Game } from './../../game';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-
+import { GameService } from '../firebase-service/game.service';
 import {FormsModule} from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
@@ -20,6 +20,7 @@ import {MatInputModule} from '@angular/material/input';
 import { AddDialogPlayerComponent } from '../add-dialog-player/add-dialog-player.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { GameInfoCardComponent } from '../game-info-card/game-info-card.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-game',
@@ -30,14 +31,22 @@ import { GameInfoCardComponent } from '../game-info-card/game-info-card.componen
 })
 export class GameComponent {
   pickCardAnimation = false;
-  game: Game   = new Game();;
+  game: Game |any;
   currentCard: string | undefined;
 
-  constructor(public dialog: MatDialog) {
+  constructor(public dialog: MatDialog,private gameService:GameService, private route:ActivatedRoute) {
    
   }
 
-  ngOnInit() {}
+    ngOnInit() {
+    this.newGame();
+    this.route.params.subscribe((param)=>{
+      this.gameService.loadSingleGame(param['id']);
+      console.log(  this.gameService.game);
+     
+    }
+    );
+  }
 
   takeCard() {
     if( this.pickCardAnimation == false){ 
@@ -46,15 +55,16 @@ export class GameComponent {
     }
     setTimeout(()=>{
       this.pickCardAnimation = false;
+      if(this.game!=undefined){ 
       this.game?.playedCard.push(this.currentCard);
       this.game.currentPlayer++;
       this.game.currentPlayer=this.game.currentPlayer%this.game.players.length;
-     
+      }
     },1500);
   }
 
   newGame() {
-    this.game = new Game();
+    this.game = new Game();  
   }
 
   openDialog(): void {
@@ -63,7 +73,6 @@ export class GameComponent {
     });
 
     dialogRef.afterClosed().subscribe(name => {
-      console.log('The dialog was closed');
       if (name !== undefined && name.length>0) {
         this.game?.players.push(name);
       }
