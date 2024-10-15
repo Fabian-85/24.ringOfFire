@@ -42,10 +42,13 @@ export class GameComponent {
     this.newGame();
     this.route.params.subscribe((param)=>{
       this.gameService.loadSingleGame(param['id']);
-      console.log(  this.gameService.game);
-     
+      setTimeout(()=>{
+        this.game = this.gameService.game;
+      },2000);
     }
     );
+     
+     
   }
 
   takeCard() {
